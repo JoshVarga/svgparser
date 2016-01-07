@@ -16,12 +16,12 @@ func ExampleParse() {
 
 	element, _ := svgparser.Parse(reader)
 
-	fmt.Println(element.Attributes["width"])
-	fmt.Println(element.Children[0].Attributes["fill"])
+	fmt.Printf("SVG width: %s", element.Attributes["width"])
+	fmt.Printf("Circle fill: %s", element.Children[0].Attributes["fill"])
 
 	// Output:
-	// 100
-	// red
+	// SVG width: 100
+	// Circle fill: red
 }
 
 func ExampleElement_FindAllChildren() {
@@ -37,12 +37,12 @@ func ExampleElement_FindAllChildren() {
 
 	rectangles := element.FindAllChildren("rect")
 
-	fmt.Println(rectangles[0].Attributes["fill"])
-	fmt.Println(rectangles[1].Attributes["y"])
+	fmt.Printf("First child fill: %s", rectangles[0].Attributes["fill"])
+	fmt.Printf("Second child height: %s", rectangles[1].Attributes["height"])
 
 	// Output:
-	// #000
-	// 1
+	// First child fill: #000
+	// Second child height: 2
 }
 
 func ExampleElement_FindChildByID() {
@@ -58,8 +58,8 @@ func ExampleElement_FindChildByID() {
 
 	white := element.FindChildByID("white")
 
-	fmt.Println(white.Attributes["fill"])
+	fmt.Printf("White rect fill: %s", white.Attributes["fill"])
 
 	// Output:
-	// #fff
+	// White rect fill: #fff
 }
