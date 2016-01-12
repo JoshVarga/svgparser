@@ -5,6 +5,9 @@ import (
 	"io"
 )
 
+// TODO: custom errors
+
+// Element is a representation of an SVG element.
 type Element struct {
 	Name        string
 	Attributes  map[string]string
@@ -22,6 +25,7 @@ func (e *Element) FindAllChildren(name string) []*Element {
 	return []*Element{}
 }
 
+// SetAttributes sets the attributes of token to the element.
 func (e *Element) SetAttributes(token xml.StartElement) {
 	attributes := make(map[string]string)
 	for _, attr := range token.Attr {
@@ -32,6 +36,8 @@ func (e *Element) SetAttributes(token xml.StartElement) {
 	e.isPopulated = true
 }
 
+// Decode adds the attributes of the next start token to the element
+// and decodes its child elements.
 func (e *Element) Decode(decoder *xml.Decoder) error {
 	for {
 		token, err := decoder.Token()
@@ -67,7 +73,6 @@ func (e *Element) Decode(decoder *xml.Decoder) error {
 }
 
 // Parse creates an Element instance from an SVG input.
-// SVG root element is not required.
 func Parse(source io.Reader) (*Element, error) {
 	decoder := xml.NewDecoder(source)
 	element := &Element{}
