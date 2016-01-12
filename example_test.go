@@ -16,7 +16,7 @@ func ExampleParse() {
 
 	element, _ := svgparser.Parse(reader)
 
-	fmt.Printf("SVG width: %s", element.Attributes["width"])
+	fmt.Printf("SVG width: %s\n", element.Attributes["width"])
 	fmt.Printf("Circle fill: %s", element.Children[0].Attributes["fill"])
 
 	// Output:
@@ -37,7 +37,7 @@ func ExampleElement_FindAllChildren() {
 
 	rectangles := element.FindAllChildren("rect")
 
-	fmt.Printf("First child fill: %s", rectangles[0].Attributes["fill"])
+	fmt.Printf("First child fill: %s\n", rectangles[0].Attributes["fill"])
 	fmt.Printf("Second child height: %s", rectangles[1].Attributes["height"])
 
 	// Output:
