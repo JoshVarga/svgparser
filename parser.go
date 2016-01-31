@@ -38,6 +38,28 @@ func (e *Element) FindAllChildren(name string) []*Element {
 	return []*Element{}
 }
 
+// Compare compares two elements.
+func (e *Element) Compare(o *Element) bool {
+	if e.Name != o.Name ||
+		len(e.Attributes) != len(o.Attributes) ||
+		len(e.Children) != len(o.Children) {
+		return false
+	}
+
+	for k, v := range e.Attributes {
+		if v != o.Attributes[k] {
+			return false
+		}
+	}
+
+	for i, child := range e.Children {
+		if !child.Compare(o.Children[i]) {
+			return false
+		}
+	}
+	return true
+}
+
 // DecodeFirst creates the first element from the decoder.
 func DecodeFirst(decoder *xml.Decoder) (*Element, error) {
 	for {
