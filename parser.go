@@ -9,10 +9,9 @@ import (
 
 // Element is a representation of an SVG element.
 type Element struct {
-	Name        string
-	Attributes  map[string]string
-	Children    []*Element
-	isPopulated bool
+	Name       string
+	Attributes map[string]string
+	Children   []*Element
 }
 
 // NewElement creates element from decoder token.
@@ -24,7 +23,6 @@ func NewElement(token xml.StartElement) *Element {
 	}
 	element.Name = token.Name.Local
 	element.Attributes = attributes
-	element.isPopulated = true
 	return element
 }
 
