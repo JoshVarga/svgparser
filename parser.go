@@ -26,16 +26,6 @@ func NewElement(token xml.StartElement) *Element {
 	return element
 }
 
-// FindChildByID finds the first child of the element with the specified ID.
-func (e *Element) FindChildByID(id string) *Element {
-	return nil
-}
-
-// FindAllChildren finds all children of the parent element by element name.
-func (e *Element) FindAllChildren(name string) []*Element {
-	return []*Element{}
-}
-
 // Compare compares two elements.
 func (e *Element) Compare(o *Element) bool {
 	if e.Name != o.Name ||
