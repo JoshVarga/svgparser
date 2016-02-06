@@ -45,7 +45,7 @@ func ExampleElement_FindAllChildren() {
 	// Second child height: 2
 }
 
-func ExampleElement_FindChildByID() {
+func ExampleElement_FindByID() {
 	svg := `
 		<svg width="1000" height="600">
 			<rect id="black" fill="#000" width="5" height="3"/>
@@ -56,7 +56,7 @@ func ExampleElement_FindChildByID() {
 	reader := strings.NewReader(svg)
 	element, _ := svgparser.Parse(reader)
 
-	white := element.FindChildByID("white")
+	white := element.FindByID("white")
 
 	fmt.Printf("White rect fill: %s", white.Attributes["fill"])
 

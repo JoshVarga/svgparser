@@ -7,6 +7,24 @@ import (
 	"github.com/catiepg/svgparser"
 )
 
+func testElement() *svgparser.Element {
+	svg := `
+		<svg width="1000" height="600">
+			<g id="first">
+				<rect width="5" height="3" id="inFirst"/>
+				<rect width="5" height="2" id="inFirst"/>
+			</g>
+			<g id="second">
+				<path d="M50 50 Q50 100 100 100"/>
+				<rect width="5" height="1"/>
+			</g>
+		</svg>
+	`
+	reader := strings.NewReader(svg)
+	element, _ := svgparser.Parse(reader)
+	return element
+}
+
 func element(name string, attrs map[string]string) *svgparser.Element {
 	return &svgparser.Element{
 		Name:       name,
@@ -15,40 +33,51 @@ func element(name string, attrs map[string]string) *svgparser.Element {
 	}
 }
 
-func compareSlices(t *testing.T, expected, actual []*svgparser.Element) {
+func equals(t *testing.T, expected, actual *svgparser.Element) {
+	if !(expected == actual || expected.Compare(actual)) {
+		t.Errorf("Find: expected %v, actual %v\n", expected, actual)
+	}
+}
+
+func equalSlices(t *testing.T, expected, actual []*svgparser.Element) {
 	if len(expected) != len(actual) {
 		t.Errorf("Find: expected %v, actual %v\n", expected, actual)
 		return
 	}
 
 	for i, r := range actual {
-		if !expected[i].Compare(r) {
-			t.Errorf("Find: expected %v, actual %v\n", expected[i], r)
-		}
+		equals(t, expected[i], r)
 	}
 }
 
 func TestFindAllChildren(t *testing.T) {
-	svg := `
-		<svg width="1000" height="600">
-			<g>
-				<rect width="5" height="3"/>
-				<rect width="5" height="2"/>
-			</g>
-			<g>
-				<circle r="10" cx="20" cy="30"/>
-				<rect width="5" height="1"/>
-			</g>
-		</svg>
-	`
-	reader := strings.NewReader(svg)
-	svgElement, _ := svgparser.Parse(reader)
+	svgElement := testElement()
 
-	compareSlices(t, []*svgparser.Element{
-		element("rect", map[string]string{"width": "5", "height": "3"}),
-		element("rect", map[string]string{"width": "5", "height": "2"}),
+	equalSlices(t, []*svgparser.Element{
+		element("rect", map[string]string{"width": "5", "height": "3", "id": "inFirst"}),
+		element("rect", map[string]string{"width": "5", "height": "2", "id": "inFirst"}),
 		element("rect", map[string]string{"width": "5", "height": "1"}),
 	}, svgElement.FindAllChildren("rect"))
 
-	compareSlices(t, []*svgparser.Element{}, svgElement.FindAllChildren("path"))
+	equalSlices(t, []*svgparser.Element{}, svgElement.FindAllChildren("circle"))
+}
+
+func TestFindByID(t *testing.T) {
+	svgElement := testElement()
+
+	equals(t, &svgparser.Element{
+		Name:       "g",
+		Attributes: map[string]string{"id": "second"},
+		Children: []*svgparser.Element{
+			element("path", map[string]string{"d": "M50 50 Q50 100 100 100"}),
+			element("rect", map[string]string{"width": "5", "height": "1"}),
+		},
+	}, svgElement.FindByID("second"))
+
+	equals(t,
+		element("rect", map[string]string{"width": "5", "height": "3", "id": "inFirst"}),
+		svgElement.FindByID("inFirst"),
+	)
+
+	equals(t, nil, svgElement.FindByID("missing"))
 }
