@@ -24,16 +24,7 @@ var testCases = []struct {
 				"height": "100",
 			},
 			Children: []*svgparser.Element{
-				&svgparser.Element{
-					Name: "circle",
-					Attributes: map[string]string{
-						"cx":   "50",
-						"cy":   "50",
-						"r":    "40",
-						"fill": "red",
-					},
-					Children: []*svgparser.Element{},
-				},
+				element("circle", map[string]string{"cx": "50", "cy": "50", "r": "40", "fill": "red"}),
 			},
 		},
 	},
@@ -41,9 +32,9 @@ var testCases = []struct {
 		`
 		<svg height="400" width="450">
 			<g stroke="black" stroke-width="3" fill="black">
-				<path id="AB" d="M 100 350 l 150 -300" stroke="red" />
-				<path id="BC" d="M 250 50 l 150 300" stroke="red" />
-				<path d="M 175 200 l 150 0" stroke="green" />
+				<path id="AB" d="M 100 350 L 150 -300" stroke="red" />
+				<path id="BC" d="M 250 50 L 150 300" stroke="red" />
+				<path d="M 175 200 L 150 0" stroke="green" />
 			</g>
 		</svg>
 		`,
@@ -62,32 +53,9 @@ var testCases = []struct {
 						"fill":         "black",
 					},
 					Children: []*svgparser.Element{
-						&svgparser.Element{
-							Name: "path",
-							Attributes: map[string]string{
-								"id":     "AB",
-								"d":      "M 100 350 l 150 -300",
-								"stroke": "red",
-							},
-							Children: []*svgparser.Element{},
-						},
-						&svgparser.Element{
-							Name: "path",
-							Attributes: map[string]string{
-								"id":     "BC",
-								"d":      "M 250 50 l 150 300",
-								"stroke": "red",
-							},
-							Children: []*svgparser.Element{},
-						},
-						&svgparser.Element{
-							Name: "path",
-							Attributes: map[string]string{
-								"d":      "M 175 200 l 150 0",
-								"stroke": "green",
-							},
-							Children: []*svgparser.Element{},
-						},
+						element("path", map[string]string{"id": "AB", "d": "M 100 350 L 150 -300", "stroke": "red"}),
+						element("path", map[string]string{"id": "BC", "d": "M 250 50 L 150 300", "stroke": "red"}),
+						element("path", map[string]string{"d": "M 175 200 L 150 0", "stroke": "green"}),
 					},
 				},
 			},
