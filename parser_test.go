@@ -8,8 +8,8 @@ import (
 )
 
 var testCases = []struct {
-	svg      string
-	expected svgparser.Element
+	svg     string
+	element svgparser.Element
 }{
 	{
 		`
@@ -93,15 +93,19 @@ var testCases = []struct {
 			},
 		},
 	},
+	{
+		"",
+		svgparser.Element{},
+	},
 }
 
 func TestParser(t *testing.T) {
 	for i, test := range testCases {
 		reader := strings.NewReader(test.svg)
-		actual, _ := svgparser.Parse(reader)
+		actual, err := svgparser.Parse(reader)
 
-		if !test.expected.Compare(actual) {
-			t.Errorf("Parse sample %d: expected %v, actual %v\n", i, test.expected, actual)
+		if !(test.element.Compare(actual) && err == nil) {
+			t.Errorf("Parse sample %d: expected %v, actual %v\n", i, test.element, actual)
 		}
 	}
 }

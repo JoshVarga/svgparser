@@ -75,8 +75,7 @@ func DecodeFirst(decoder *xml.Decoder) (*Element, error) {
 			return NewElement(element), nil
 		}
 	}
-	// TODO: no start element
-	return nil, nil
+	return &Element{}, nil
 }
 
 // Decode decodes the child elements of element.
