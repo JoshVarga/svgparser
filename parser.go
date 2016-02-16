@@ -5,7 +5,29 @@ import (
 	"io"
 )
 
-// TODO: custom errors
+type Empty struct{}
+
+var containers = map[string]struct{}{
+	"a":             Empty{},
+	"defs":          Empty{},
+	"glyph":         Empty{},
+	"g":             Empty{},
+	"marker":        Empty{},
+	"mask":          Empty{},
+	"missing-glyph": Empty{},
+	"pattern":       Empty{},
+	"svg":           Empty{},
+	"switch":        Empty{},
+	"symbol":        Empty{},
+}
+
+type ValidationError struct {
+	msg string
+}
+
+func (err ValidationError) Error() string {
+	return err.msg
+}
 
 // Element is a representation of an SVG element.
 type Element struct {
@@ -96,6 +118,9 @@ func (e *Element) Decode(decoder *xml.Decoder) error {
 
 		case xml.EndElement:
 			if element.Name.Local == e.Name {
+				if _, ok := containers[e.Name]; !ok && len(e.Children) > 0 {
+					return ValidationError{"Element " + e.Name + " is not a container"}
+				}
 				return nil
 			}
 		}
