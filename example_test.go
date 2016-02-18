@@ -2,8 +2,10 @@ package svgparser_test
 
 import (
 	"fmt"
-	"github.com/catiepg/svgparser"
 	"strings"
+
+	"github.com/catiepg/svgparser"
+	"github.com/catiepg/svgparser/utils"
 )
 
 func ExampleParse() {
@@ -62,4 +64,26 @@ func ExampleElement_FindByID() {
 
 	// Output:
 	// White rect fill: #fff
+}
+
+func ExamplePathParser() {
+	d := "M50,50 A30,30 0 0,1 35,20 L100,100 M110,110 L100,0"
+	path, _ := utils.PathParser(d)
+
+	fmt.Printf("Number of subpaths: %d\n", len(path.Subpaths))
+	for i, subpath := range path.Subpaths {
+		fmt.Printf("Path %d: ", i)
+		for j, command := range subpath.Commands {
+			if j+1 == len(subpath.Commands) {
+				fmt.Printf("%v\n", command)
+			} else {
+				fmt.Printf("%v -> ", command)
+			}
+		}
+	}
+
+	// Output:
+	// Number of subpaths: 2
+	// Path 0: &{M [50 50]} -> &{A [30 30 0 0 1 35 20]} -> &{L [100 100]}
+	// Path 1: &{M [110 110]} -> &{L [100 0]}
 }
