@@ -5,6 +5,7 @@ import (
 	"strings"
 )
 
+// structure containing information about path commands as by specification
 var allCommands commands
 
 type commands struct {
@@ -43,20 +44,24 @@ func (err PathParserError) Error() string {
 	return err.msg
 }
 
-type Token struct {
+// token can contain an operator or an operand as string.
+type token struct {
 	value    string
 	operator bool
 }
 
+// Command is a representation of an SVG path command and its parameters.
 type Command struct {
 	Symbol string
 	Params []float64
 }
 
+// IsAbsolute returns true is the SVG path command is absolute.
 func (c *Command) IsAbsolute() bool {
 	return c.Symbol == strings.ToUpper(c.Symbol)
 }
 
+// Compare compares two commands.
 func (c *Command) Compare(o *Command) bool {
 	if c.Symbol != o.Symbol {
 		return false
@@ -69,10 +74,13 @@ func (c *Command) Compare(o *Command) bool {
 	return true
 }
 
+// Subpath is a collection of Commands, beginning with moveto command and
+// usually ending with closepath command.
 type Subpath struct {
 	Commands []*Command
 }
 
+// Compare compares two subpaths.
 func (s *Subpath) Compare(o *Subpath) bool {
 	if len(s.Commands) != len(o.Commands) {
 		return false
@@ -85,10 +93,12 @@ func (s *Subpath) Compare(o *Subpath) bool {
 	return true
 }
 
+// Path is a collection of all the subpaths in 'd' attribute.
 type Path struct {
 	Subpaths []*Subpath
 }
 
+// Compare compares two paths.
 func (p *Path) Compare(o *Path) bool {
 	if len(p.Subpaths) != len(o.Subpaths) {
 		return false
@@ -108,18 +118,19 @@ func reverse(ops []float64) []float64 {
 	return ops
 }
 
-func addOperand(tokens []Token, operand string) ([]Token, string) {
+func addOperand(tokens []token, operand string) ([]token, string) {
 	if operand != "" {
-		tokens = append(tokens, Token{operand, false})
+		tokens = append(tokens, token{operand, false})
 		operand = ""
 	}
 	return tokens, operand
 }
 
-// STEP 1
-func Tokenize(raw string) []Token {
+// tokenize takes value of 'd' attribute and transforms it to series of
+// operators and operands - step 1.
+func tokenize(raw string) []token {
 	var (
-		tokens  []Token
+		tokens  []token
 		operand string
 	)
 	for _, r := range raw {
@@ -127,13 +138,13 @@ func Tokenize(raw string) []Token {
 		switch {
 		case allCommands.isCommand(char):
 			tokens, operand = addOperand(tokens, operand)
-			tokens = append(tokens, Token{char, true})
+			tokens = append(tokens, token{char, true})
 		case char == ".":
 			if operand == "" {
 				operand = "0"
 			}
 			if strings.Contains(operand, char) {
-				tokens = append(tokens, Token{operand, false})
+				tokens = append(tokens, token{operand, false})
 				operand = "0"
 			}
 			fallthrough
@@ -150,32 +161,33 @@ func Tokenize(raw string) []Token {
 	return tokens
 }
 
-// STEP 2
-func TokensToCommands(tokens []Token) ([]*Command, error) {
+// toCommands takes a collection of operators and operands and produces
+// Command objects - step 2.
+func toCommands(tokens []token) ([]*Command, error) {
 	var (
 		commands []*Command
 		operands []float64
 	)
 	for i := len(tokens) - 1; i >= 0; i-- {
-		token := tokens[i]
-		if token.operator {
-			nParam := allCommands.parameters[strings.ToLower(token.value)]
+		t := tokens[i]
+		if t.operator {
+			nParam := allCommands.parameters[strings.ToLower(t.value)]
 			nOperand := len(operands)
 			if nParam == 0 && nOperand == 0 {
-				command := &Command{Symbol: token.value}
+				command := &Command{Symbol: t.value}
 				commands = append([]*Command{command}, commands...)
 			} else if nParam != 0 && nOperand%nParam == 0 {
 				for i := 0; i < nOperand/nParam; i++ {
-					command := &Command{token.value, reverse(operands[:nParam])}
+					command := &Command{t.value, reverse(operands[:nParam])}
 					commands = append([]*Command{command}, commands...)
 					operands = operands[nParam:]
 				}
 			} else {
-				err := PathParserError{"Incorrect number of parameters for " + token.value}
+				err := PathParserError{"Incorrect number of parameters for " + t.value}
 				return nil, err
 			}
 		} else {
-			if number, err := strconv.ParseFloat(token.value, 64); err != nil {
+			if number, err := strconv.ParseFloat(t.value, 64); err != nil {
 				return nil, err
 			} else {
 				operands = append(operands, number)
@@ -185,8 +197,9 @@ func TokensToCommands(tokens []Token) ([]*Command, error) {
 	return commands, nil
 }
 
-// STEP 3
-func CreateSubpaths(commands []*Command) *Path {
+// Create Subpaths takes a collection of Command objects and determines all
+// subpaths within the collection - step 3.
+func createSubpaths(commands []*Command) *Path {
 	path := &Path{}
 	var subpath []*Command
 	for i, command := range commands {
@@ -209,11 +222,13 @@ func CreateSubpaths(commands []*Command) *Path {
 	return path
 }
 
+// PathParser takes value of a 'd' attribute and transforms it to collection of
+// subpaths and commands.
 func PathParser(raw string) (*Path, error) {
 	allCommands = getCommands()
-	commands, err := TokensToCommands(Tokenize(raw))
+	commands, err := toCommands(tokenize(raw))
 	if err != nil {
 		return nil, err
 	}
-	return CreateSubpaths(commands), nil
+	return createSubpaths(commands), nil
 }
