@@ -82,11 +82,11 @@ func TestValidation(t *testing.T) {
 			<path id="AB" d="M 100 350 L 150 -300" stroke="red" />
 		</circle>
 		`
-	expected := "Document validation error"
 	element, err := parse(svg, true)
+	expectedError := "Document validation error"
 
-	if !(element == nil && err.Error() == string(expected)) {
-		t.Errorf("Validation: expected %v, actual %v\n", expected, err)
+	if !(element == nil && err.Error() == expectedError) {
+		t.Errorf("Validation: expected %v, actual %v\n", expectedError, err)
 	}
 }
 

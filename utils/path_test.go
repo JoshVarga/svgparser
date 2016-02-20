@@ -129,9 +129,9 @@ func TestPathParser(t *testing.T) {
 
 func TestParamNumberInPath(t *testing.T) {
 	path, err := utils.PathParser("M 10 20 30 Z")
-	expectedErr := "Incorrect number of parameters for M"
+	expectedError := "Incorrect number of parameters for M"
 
-	if !(path == nil && err.Error() == expectedErr) {
-		t.Errorf("Path: expected %v, actual %v\n", expectedErr, err)
+	if !(path == nil && err.Error() == expectedError) {
+		t.Errorf("Path: expected %v, actual %v\n", expectedError, err)
 	}
 }

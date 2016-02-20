@@ -23,6 +23,23 @@ func testElement() *svgparser.Element {
 	return element
 }
 
+func equals(t *testing.T, name string, expected, actual *svgparser.Element) {
+	if !(expected == actual || expected.Compare(actual)) {
+		t.Errorf("%s: expected %v, actual %v\n", name, expected, actual)
+	}
+}
+
+func equalSlices(t *testing.T, name string, expected, actual []*svgparser.Element) {
+	if len(expected) != len(actual) {
+		t.Errorf("%s: expected %v, actual %v\n", name, expected, actual)
+		return
+	}
+
+	for i, r := range actual {
+		equals(t, name, expected[i], r)
+	}
+}
+
 func TestFindAllChildren(t *testing.T) {
 	svgElement := testElement()
 
