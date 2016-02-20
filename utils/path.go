@@ -36,6 +36,8 @@ func (c *commands) isCommand(token string) bool {
 	return false
 }
 
+// PathParserError contains errors which have occured when parsing 'd'
+// attribute of a path element.
 type PathParserError struct {
 	msg string
 }
@@ -187,11 +189,11 @@ func toCommands(tokens []token) ([]*Command, error) {
 				return nil, err
 			}
 		} else {
-			if number, err := strconv.ParseFloat(t.value, 64); err != nil {
+			number, err := strconv.ParseFloat(t.value, 64)
+			if err != nil {
 				return nil, err
-			} else {
-				operands = append(operands, number)
 			}
+			operands = append(operands, number)
 		}
 	}
 	return commands, nil

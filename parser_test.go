@@ -67,11 +67,11 @@ func TestParser(t *testing.T) {
 		},
 	}
 
-	for i, test := range testCases {
+	for _, test := range testCases {
 		actual, err := parse(test.svg, false)
 
 		if !(test.element.Compare(actual) && err == nil) {
-			t.Errorf("Parse: expected %v, actual %v\n", i, test.element, actual)
+			t.Errorf("Parse: expected %v, actual %v\n", test.element, actual)
 		}
 	}
 }

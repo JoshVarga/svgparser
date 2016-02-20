@@ -14,6 +14,7 @@ import (
 
 const schemaPath = "schemas/svg.xsd"
 
+// ValidationError contains errors which have occured when parsing svg input.
 type ValidationError struct {
 	msg string
 }

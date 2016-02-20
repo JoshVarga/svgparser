@@ -16,10 +16,10 @@ func TestPathParser(t *testing.T) {
 			&utils.Path{
 				[]*utils.Subpath{
 					&utils.Subpath{
-						[]*utils.Command{
-							&utils.Command{"M", []float64{10, 20}},
-							&utils.Command{"L", []float64{30, 30}},
-							&utils.Command{"Z", []float64{}},
+						Commands: []*utils.Command{
+							&utils.Command{Symbol: "M", Params: []float64{10, 20}},
+							&utils.Command{Symbol: "L", Params: []float64{30, 30}},
+							&utils.Command{Symbol: "Z", Params: []float64{}},
 						},
 					},
 				},
@@ -30,10 +30,10 @@ func TestPathParser(t *testing.T) {
 			&utils.Path{
 				[]*utils.Subpath{
 					&utils.Subpath{
-						[]*utils.Command{
-							&utils.Command{"M", []float64{0.2, 0.3}},
-							&utils.Command{"L", []float64{30, 30}},
-							&utils.Command{"Z", []float64{}},
+						Commands: []*utils.Command{
+							&utils.Command{Symbol: "M", Params: []float64{0.2, 0.3}},
+							&utils.Command{Symbol: "L", Params: []float64{30, 30}},
+							&utils.Command{Symbol: "Z", Params: []float64{}},
 						},
 					},
 				},
@@ -44,10 +44,10 @@ func TestPathParser(t *testing.T) {
 			&utils.Path{
 				[]*utils.Subpath{
 					&utils.Subpath{
-						[]*utils.Command{
-							&utils.Command{"M", []float64{0.2, 0.3}},
-							&utils.Command{"L", []float64{30, 30}},
-							&utils.Command{"Z", []float64{}},
+						Commands: []*utils.Command{
+							&utils.Command{Symbol: "M", Params: []float64{0.2, 0.3}},
+							&utils.Command{Symbol: "L", Params: []float64{30, 30}},
+							&utils.Command{Symbol: "Z", Params: []float64{}},
 						},
 					},
 				},
@@ -58,10 +58,10 @@ func TestPathParser(t *testing.T) {
 			&utils.Path{
 				[]*utils.Subpath{
 					&utils.Subpath{
-						[]*utils.Command{
-							&utils.Command{"M", []float64{10, -20}},
-							&utils.Command{"L", []float64{30, 30}},
-							&utils.Command{"Z", []float64{}},
+						Commands: []*utils.Command{
+							&utils.Command{Symbol: "M", Params: []float64{10, -20}},
+							&utils.Command{Symbol: "L", Params: []float64{30, 30}},
+							&utils.Command{Symbol: "Z", Params: []float64{}},
 						},
 					},
 				},
@@ -72,11 +72,11 @@ func TestPathParser(t *testing.T) {
 			&utils.Path{
 				[]*utils.Subpath{
 					&utils.Subpath{
-						[]*utils.Command{
-							&utils.Command{"M", []float64{10, -20}},
-							&utils.Command{"L", []float64{30, 30}},
-							&utils.Command{"L", []float64{40, 40}},
-							&utils.Command{"Z", []float64{}},
+						Commands: []*utils.Command{
+							&utils.Command{Symbol: "M", Params: []float64{10, -20}},
+							&utils.Command{Symbol: "L", Params: []float64{30, 30}},
+							&utils.Command{Symbol: "L", Params: []float64{40, 40}},
+							&utils.Command{Symbol: "Z", Params: []float64{}},
 						},
 					},
 				},
@@ -87,18 +87,18 @@ func TestPathParser(t *testing.T) {
 			&utils.Path{
 				[]*utils.Subpath{
 					&utils.Subpath{
-						[]*utils.Command{
-							&utils.Command{"M", []float64{10, 20}},
-							&utils.Command{"L", []float64{20, 30}},
-							&utils.Command{"Z", []float64{}},
+						Commands: []*utils.Command{
+							&utils.Command{Symbol: "M", Params: []float64{10, 20}},
+							&utils.Command{Symbol: "L", Params: []float64{20, 30}},
+							&utils.Command{Symbol: "Z", Params: []float64{}},
 						},
 					},
 					&utils.Subpath{
-						[]*utils.Command{
-							&utils.Command{"M", []float64{10, 20}},
-							&utils.Command{"L", []float64{20, 30}},
-							&utils.Command{"L", []float64{40, 50}},
-							&utils.Command{"Z", []float64{}},
+						Commands: []*utils.Command{
+							&utils.Command{Symbol: "M", Params: []float64{10, 20}},
+							&utils.Command{Symbol: "L", Params: []float64{20, 30}},
+							&utils.Command{Symbol: "L", Params: []float64{40, 50}},
+							&utils.Command{Symbol: "Z", Params: []float64{}},
 						},
 					},
 				},
@@ -109,10 +109,10 @@ func TestPathParser(t *testing.T) {
 			&utils.Path{
 				[]*utils.Subpath{
 					&utils.Subpath{
-						[]*utils.Command{
-							&utils.Command{"M", []float64{10, 20}},
-							&utils.Command{"L", []float64{20, 30}},
-							&utils.Command{"L", []float64{10, 20}},
+						Commands: []*utils.Command{
+							&utils.Command{Symbol: "M", Params: []float64{10, 20}},
+							&utils.Command{Symbol: "L", Params: []float64{20, 30}},
+							&utils.Command{Symbol: "L", Params: []float64{10, 20}},
 						},
 					},
 				},

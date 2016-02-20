@@ -1,6 +1,6 @@
 package svgparser
 
-// FindChildByID finds the first child with the specified ID.
+// FindID finds the first child with the specified ID.
 func (e *Element) FindID(id string) *Element {
 	for _, child := range e.Children {
 		if childID, ok := child.Attributes["id"]; ok && childID == id {
@@ -13,7 +13,7 @@ func (e *Element) FindID(id string) *Element {
 	return nil
 }
 
-// FindAllChildren finds all children with the given name.
+// FindAll finds all children with the given name.
 func (e *Element) FindAll(name string) []*Element {
 	var elements []*Element
 	for _, child := range e.Children {
