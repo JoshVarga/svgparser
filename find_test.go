@@ -40,19 +40,19 @@ func equalSlices(t *testing.T, name string, expected, actual []*svgparser.Elemen
 	}
 }
 
-func TestFindAllChildren(t *testing.T) {
+func TestFindAll(t *testing.T) {
 	svgElement := testElement()
 
 	equalSlices(t, "Find", []*svgparser.Element{
 		element("rect", map[string]string{"width": "5", "height": "3", "id": "inFirst"}),
 		element("rect", map[string]string{"width": "5", "height": "2", "id": "inFirst"}),
 		element("rect", map[string]string{"width": "5", "height": "1"}),
-	}, svgElement.FindAllChildren("rect"))
+	}, svgElement.FindAll("rect"))
 
-	equalSlices(t, "Find", []*svgparser.Element{}, svgElement.FindAllChildren("circle"))
+	equalSlices(t, "Find", []*svgparser.Element{}, svgElement.FindAll("circle"))
 }
 
-func TestFindByID(t *testing.T) {
+func TestFindID(t *testing.T) {
 	svgElement := testElement()
 
 	equals(t, "Find", &svgparser.Element{
@@ -62,12 +62,12 @@ func TestFindByID(t *testing.T) {
 			element("path", map[string]string{"d": "M50 50 Q50 100 100 100"}),
 			element("rect", map[string]string{"width": "5", "height": "1"}),
 		},
-	}, svgElement.FindByID("second"))
+	}, svgElement.FindID("second"))
 
 	equals(t, "Find",
 		element("rect", map[string]string{"width": "5", "height": "3", "id": "inFirst"}),
-		svgElement.FindByID("inFirst"),
+		svgElement.FindID("inFirst"),
 	)
 
-	equals(t, "Find", nil, svgElement.FindByID("missing"))
+	equals(t, "Find", nil, svgElement.FindID("missing"))
 }

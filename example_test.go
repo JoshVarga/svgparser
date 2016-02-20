@@ -36,13 +36,13 @@ func ExampleValidate() {
 
 	element, _ := svgparser.Parse(reader, true)
 
-	fmt.Printf("Desc content: %+v\n", element.FindAllChildren("desc")[0].Content)
+	fmt.Printf("Desc content: %+v\n", element.FindAll("desc")[0].Content)
 
 	// Output:
 	// Desc content: Test validation
 }
 
-func ExampleElement_FindAllChildren() {
+func ExampleElement_FindAll() {
 	svg := `
 		<svg width="1000" height="600">
 			<rect fill="#000" width="5" height="3"/>
@@ -53,7 +53,7 @@ func ExampleElement_FindAllChildren() {
 	reader := strings.NewReader(svg)
 	element, _ := svgparser.Parse(reader, false)
 
-	rectangles := element.FindAllChildren("rect")
+	rectangles := element.FindAll("rect")
 
 	fmt.Printf("First child fill: %s\n", rectangles[0].Attributes["fill"])
 	fmt.Printf("Second child height: %s", rectangles[1].Attributes["height"])
@@ -63,7 +63,7 @@ func ExampleElement_FindAllChildren() {
 	// Second child height: 2
 }
 
-func ExampleElement_FindByID() {
+func ExampleElement_FindID() {
 	svg := `
 		<svg width="1000" height="600">
 			<rect id="black" fill="#000" width="5" height="3"/>
@@ -74,7 +74,7 @@ func ExampleElement_FindByID() {
 	reader := strings.NewReader(svg)
 	element, _ := svgparser.Parse(reader, false)
 
-	white := element.FindByID("white")
+	white := element.FindID("white")
 
 	fmt.Printf("White rect fill: %s", white.Attributes["fill"])
 
