@@ -6,6 +6,20 @@ Library for parsing and manipulating SVG files.
 
 	go get github.com/catiepg/svgparser
 
+### Features
+
+##### Validation
+Checks if the SVG input is valid according to the [W3C Recommendation](https://www.w3.org/TR/SVG/Overview.html).
+
+##### Find functionality
+Provides capability to search for SVG elements by id or element name.
+
+##### Path Parser
+Parsing the 'd' attribute of a path element into a structure containing all subpaths with their commands and parameters.
+
+##### Style Parser
+Parsing the value of a style element.
+
 ### Example
 
 	func ExampleParse() {
@@ -16,7 +30,7 @@ Library for parsing and manipulating SVG files.
 		`
 		reader := strings.NewReader(svg)
 
-		element, _ := svgparser.Parse(reader)
+		element, _ := svgparser.Parse(reader, false)
 
 		fmt.Printf("SVG width: %s", element.Attributes["width"])
 		fmt.Printf("Circle fill: %s", element.Children[0].Attributes["fill"])
