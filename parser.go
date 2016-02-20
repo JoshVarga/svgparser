@@ -5,6 +5,7 @@ import (
 	"encoding/xml"
 	"io"
 	"io/ioutil"
+	"strings"
 	"unsafe"
 
 	"github.com/jbussdieker/golibxml"
@@ -26,6 +27,7 @@ type Element struct {
 	Name       string
 	Attributes map[string]string
 	Children   []*Element
+	Content    string
 }
 
 // NewElement creates element from decoder token.
@@ -42,7 +44,7 @@ func NewElement(token xml.StartElement) *Element {
 
 // Compare compares two elements.
 func (e *Element) Compare(o *Element) bool {
-	if e.Name != o.Name ||
+	if e.Name != o.Name || e.Content != o.Content ||
 		len(e.Attributes) != len(o.Attributes) ||
 		len(e.Children) != len(o.Children) {
 		return false
@@ -104,6 +106,12 @@ func (e *Element) Decode(decoder *xml.Decoder) error {
 
 			e.Children = append(e.Children, nextElement)
 
+		case xml.CharData:
+			data := strings.TrimSpace(string(element))
+			if data != "" {
+				e.Content = string(element)
+			}
+
 		case xml.EndElement:
 			if element.Name.Local == e.Name {
 				return nil
@@ -115,7 +123,7 @@ func (e *Element) Decode(decoder *xml.Decoder) error {
 }
 
 // Validate tests SVG imput against XML schema.
-func Validate(source io.Reader) error {
+func Validate(raw []byte) error {
 	schemaFile, err := ioutil.ReadFile(schemaPath)
 	if err != nil {
 		return err
@@ -126,8 +134,7 @@ func Validate(source io.Reader) error {
 		return err
 	}
 
-	buf := new(bytes.Buffer)
-	buf.ReadFrom(source)
+	buf := bytes.NewBuffer(raw)
 
 	document := golibxml.ParseDoc(buf.String())
 	if document == nil {
@@ -143,13 +150,18 @@ func Validate(source io.Reader) error {
 
 // Parse creates an Element instance from an SVG input.
 func Parse(source io.Reader, validate bool) (*Element, error) {
+	raw, err := ioutil.ReadAll(source)
+	if err != nil {
+		return nil, err
+	}
+
 	if validate {
-		if err := Validate(source); err != nil {
+		if err := Validate(raw); err != nil {
 			return nil, err
 		}
 	}
 
-	decoder := xml.NewDecoder(source)
+	decoder := xml.NewDecoder(bytes.NewReader(raw))
 	element, err := DecodeFirst(decoder)
 	if err != nil {
 		return nil, err

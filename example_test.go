@@ -26,6 +26,22 @@ func ExampleParse() {
 	// Circle fill: red
 }
 
+func ExampleValidate() {
+	svg := `
+		<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="svg-root" width="100%" height="100%">
+			<desc id="test-desc">Test validation</desc>
+		</svg>
+	`
+	reader := strings.NewReader(svg)
+
+	element, _ := svgparser.Parse(reader, true)
+
+	fmt.Printf("Desc content: %+v\n", element.FindAllChildren("desc")[0].Content)
+
+	// Output:
+	// Desc content: Test validation
+}
+
 func ExampleElement_FindAllChildren() {
 	svg := `
 		<svg width="1000" height="600">
