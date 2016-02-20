@@ -15,8 +15,8 @@ func element(name string, attrs map[string]string) *svgparser.Element {
 	}
 }
 
-func parse(svg string) (*svgparser.Element, error) {
-	element, err := svgparser.Parse(strings.NewReader(svg))
+func parse(svg string, validate bool) (*svgparser.Element, error) {
+	element, err := svgparser.Parse(strings.NewReader(svg), validate)
 	return element, err
 }
 

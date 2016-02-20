@@ -19,7 +19,7 @@ func testElement() *svgparser.Element {
 			</g>
 		</svg>
 	`
-	element, _ := parse(svg)
+	element, _ := parse(svg, false)
 	return element
 }
 

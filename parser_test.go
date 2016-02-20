@@ -68,7 +68,7 @@ func TestParser(t *testing.T) {
 	}
 
 	for i, test := range testCases {
-		actual, err := parse(test.svg)
+		actual, err := parse(test.svg, false)
 
 		if !(test.element.Compare(actual) && err == nil) {
 			t.Errorf("Parse: expected %v, actual %v\n", i, test.element, actual)
@@ -76,16 +76,31 @@ func TestParser(t *testing.T) {
 	}
 }
 
-func TestContainerValidation(t *testing.T) {
+func TestValidation(t *testing.T) {
 	svg := `
 		<circle cx="40" cy="40" r="20">
 			<path id="AB" d="M 100 350 L 150 -300" stroke="red" />
 		</circle>
-	`
-	element, err := parse(svg)
-	expected := "Element circle is not a container"
+		`
+	expected := "Document validation error"
+	element, err := parse(svg, true)
 
-	if !(element == nil && err.Error() == expected) {
-		t.Errorf("Validation: expected %v, actual %v\n", expected, err.Error())
+	if !(element == nil && err.Error() == string(expected)) {
+		t.Errorf("Validation: expected %v, actual %v\n", expected, err)
+	}
+}
+
+func TestValidDocument(t *testing.T) {
+	svg := `
+		<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="svg-root" width="100%" height="100%" viewBox="0 0 480 360">
+			<title id="test-title">color-prop-01-b</title>
+			<desc id="test-desc">Test that viewer has the basic capability to process the color property</desc>
+			<rect id="test-frame" x="1" y="1" width="478" height="358" fill="none" stroke="#000000"/>
+		</svg>
+		`
+
+	element, err := parse(svg, true)
+	if !(element != nil && err == nil) {
+		t.Errorf("Validation: expected %v, actual %v\n", nil, err)
 	}
 }
