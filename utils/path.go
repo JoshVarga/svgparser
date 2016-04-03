@@ -214,6 +214,7 @@ func createSubpaths(commands []*Command) *Path {
 		case allCommands.end:
 			subpathWithEnd := append(subpath, command)
 			path.Subpaths = append(path.Subpaths, &Subpath{subpathWithEnd})
+			subpath = []*Command{}
 		default:
 			subpath = append(subpath, command)
 			if len(commands) == i+1 {
