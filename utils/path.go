@@ -150,11 +150,15 @@ func tokenize(raw string) []token {
 				operand = "0"
 			}
 			fallthrough
-		case char >= "0" && char <= "9":
+		case char >= "0" && char <= "9" || char == "e":
 			operand += char
 		case char == "-":
-			tokens, operand = addOperand(tokens, operand)
-			operand = char
+			if strings.HasSuffix(operand, "e") {
+				operand += char
+			} else {
+				tokens, operand = addOperand(tokens, operand)
+				operand = char
+			}
 		default:
 			tokens, operand = addOperand(tokens, operand)
 		}
@@ -179,8 +183,16 @@ func toCommands(tokens []token) ([]*Command, error) {
 				command := &Command{Symbol: t.value}
 				commands = append([]*Command{command}, commands...)
 			} else if nParam != 0 && nOperand%nParam == 0 {
-				for i := 0; i < nOperand/nParam; i++ {
-					command := &Command{t.value, reverse(operands[:nParam])}
+				loopCount := nOperand / nParam
+				for i := 0; i < loopCount; i++ {
+					operator := t.value
+					if operator == "m" && i < loopCount-1 {
+						operator = "l"
+					}
+					if operator == "M" && i < loopCount-1 {
+						operator = "L"
+					}
+					command := &Command{operator, reverse(operands[:nParam])}
 					commands = append([]*Command{command}, commands...)
 					operands = operands[nParam:]
 				}
@@ -212,8 +224,8 @@ func createSubpaths(commands []*Command) *Path {
 			}
 			subpath = []*Command{command}
 		case allCommands.end:
-			subpathWithEnd := append(subpath, command)
-			path.Subpaths = append(path.Subpaths, &Subpath{subpathWithEnd})
+			subpath = append(subpath, command)
+			path.Subpaths = append(path.Subpaths, &Subpath{subpath})
 			subpath = []*Command{}
 		default:
 			subpath = append(subpath, command)
