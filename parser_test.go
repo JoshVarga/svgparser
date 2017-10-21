@@ -3,7 +3,7 @@ package svgparser_test
 import (
 	"testing"
 
-	"github.com/catiepg/svgparser"
+	"github.com/JoshVarga/svgparser"
 )
 
 func TestParser(t *testing.T) {
@@ -73,20 +73,6 @@ func TestParser(t *testing.T) {
 		if !(test.element.Compare(actual) && err == nil) {
 			t.Errorf("Parse: expected %v, actual %v\n", test.element, actual)
 		}
-	}
-}
-
-func TestValidation(t *testing.T) {
-	svg := `
-		<circle cx="40" cy="40" r="20">
-			<path id="AB" d="M 100 350 L 150 -300" stroke="red" />
-		</circle>
-		`
-	element, err := parse(svg, true)
-	expectedError := "Document validation error"
-
-	if !(element == nil && err.Error() == expectedError) {
-		t.Errorf("Validation: expected %v, actual %v\n", expectedError, err)
 	}
 }
 

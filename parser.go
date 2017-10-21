@@ -6,13 +6,7 @@ import (
 	"io"
 	"io/ioutil"
 	"strings"
-	"unsafe"
-
-	"github.com/jbussdieker/golibxml"
-	"github.com/krolaw/xsd"
 )
-
-const schemaPath = "schemas/svg.xsd"
 
 // ValidationError contains errors which have occured when parsing svg input.
 type ValidationError struct {
@@ -119,33 +113,6 @@ func (e *Element) Decode(decoder *xml.Decoder) error {
 			}
 		}
 	}
-
-	return nil
-}
-
-// Validate tests SVG imput against XML schema.
-func Validate(raw []byte) error {
-	schemaFile, err := ioutil.ReadFile(schemaPath)
-	if err != nil {
-		return err
-	}
-
-	schema, err := xsd.ParseSchema(schemaFile)
-	if err != nil {
-		return err
-	}
-
-	buf := bytes.NewBuffer(raw)
-
-	document := golibxml.ParseDoc(buf.String())
-	if document == nil {
-		return ValidationError{"Error parsing document"}
-	}
-	defer document.Free()
-
-	if err := schema.Validate(xsd.DocPtr(unsafe.Pointer(document.Ptr))); err != nil {
-		return err
-	}
 	return nil
 }
 
@@ -155,13 +122,6 @@ func Parse(source io.Reader, validate bool) (*Element, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	if validate {
-		if err := Validate(raw); err != nil {
-			return nil, err
-		}
-	}
-
 	decoder := xml.NewDecoder(bytes.NewReader(raw))
 	element, err := DecodeFirst(decoder)
 	if err != nil {
