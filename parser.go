@@ -3,9 +3,11 @@ package svgparser
 import (
 	"bytes"
 	"encoding/xml"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"strings"
+	"golang.org/x/net/html/charset"
 )
 
 // ValidationError contains errors which have occured when parsing svg input.
@@ -123,10 +125,12 @@ func Parse(source io.Reader, validate bool) (*Element, error) {
 		return nil, err
 	}
 	decoder := xml.NewDecoder(bytes.NewReader(raw))
+	decoder.CharsetReader = charset.NewReaderLabel
 	element, err := DecodeFirst(decoder)
 	if err != nil {
 		return nil, err
 	}
+	fmt.Printf("Node: %v\n", element.Name)
 	if err := element.Decode(decoder); err != nil && err != io.EOF {
 		return nil, err
 	}
