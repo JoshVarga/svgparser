@@ -4,7 +4,7 @@ Library for parsing and manipulating SVG files.
 
 ### Installation
 
-	go get github.com/catiepg/svgparser
+	go get github.com/JoshVarga/svgparser
 
 ### Features
 
