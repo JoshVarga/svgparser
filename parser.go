@@ -3,7 +3,6 @@ package svgparser
 import (
 	"bytes"
 	"encoding/xml"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"strings"
